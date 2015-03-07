@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0074)http://www.emunix.emich.edu/~sverdlik/COSC472/assignment1/assignment1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>Assignment 1: Twitter Sentiment Analysis in Python</title>
+
+
+<style>
+.turnin {
+color:red;
+font-size:120%;
+}
+.important {
+color:purple;
+}
+p {
+padding-bottom:0.25em;
+}
+h3 {
+padding-top:2em;
+}
+h4 {
+padding-top:1em;
+}
+</style><style type="text/css"></style></head><body>
+<div style="text-align: center;"><big><span style="font-weight: bold;">Programming Assignment #1</span></big><br style="font-weight: bold;">
+<big><span style="font-weight: bold;">Data Mining Twitter Feeds</span></big><br>
+</div>
+<br style="font-style: italic;">
+<span style="font-style: italic;">This assignment may look overwhelming
+at first, but it isn't. I completed it in several hours (and I'm a
+really bad Python programmer). Read through it completely first, then
+also </span><a style="font-style: italic;" href="http://www.emunix.emich.edu/~sverdlik/COSC472/assignment1/recoded_videos_assignment_1_getting_started_p0_p1%20%5B913cf683%5D%20.webm">watch the video</a><span style="font-style: italic;">.</span><br style="font-style: italic;">
+<span style="font-style: italic;">This assignment if from Bill Howe's (University of Washington) Coursera course on Data Science. </span><br style="font-style: italic;">
+<br>
+The files you will need for this assignment:<br>
+<br>
+<a href="http://www.emunix.emich.edu/~sverdlik/COSC472/assignment1/AFINN-111.txt">AFINN-111.txt</a><br>
+<a href="http://www.emunix.emich.edu/~sverdlik/COSC472/assignment1/AFINN-README.txt">AFINN-README.txt</a><br>
+<a href="http://www.emunix.emich.edu/~sverdlik/COSC472/assignment1/term_sentiment.py">term_sentiment.py</a><br>
+<a href="http://www.emunix.emich.edu/~sverdlik/COSC472/assignment1/tweet_sentiment.py">tweet_sentiment.py</a><br>
+<a href="http://www.emunix.emich.edu/~sverdlik/COSC472/assignment1/twitterstream.py">twitterstream.py</a><br>
+<br>
+<br>
+<br>
+
+
+<div>
+
+<p>Twitter represents a fundamentally new instrument to make social
+measurements. Millions of people voluntarily express opinions across
+any topic imaginable --- this data source is incredibly valuable for
+both research and business.</p>
+
+<p>For example, researchers have shown that the "mood" of communication on twitter <a href="http://www.nytimes.com/2011/09/30/science/30twitter.html"><strong>reflects biological rhythms</strong></a> and can even used to <a href="http://arxiv.org/pdf/1010.3003&embedded=true"><strong>predict the stock market</strong></a>. A
+student here at UW used geocoded tweets to <a href="http://cliffmass.blogspot.com/2012/07/thunderstorm-fest.html"><strong>plot a map of locations where "thunder" was mentioned in the context of a storm system in Summer 2012.</strong></a></p>
+
+<p>Researchers from Northeastern University and Harvard University studying the characteristics and dynamics of Twitter <a href="http://www.ccs.neu.edu/home/amislove/twittermood/"><strong>have an excellent resource</strong></a> for learning more about how Twitter can be used to analyze moods at national scale.</p>
+
+<p>In this assignment, you will
+</p><ul>
+<li> access the twitter Application Programming Interface(API) using python</li>
+<li>estimate the public's perception (the <em>sentiment</em>) of a particular term or phrase</li>
+<li>analyze the relationship between location and mood based on a sample of twitter data</li>
+</ul>
+<p></p>
+
+<p>Some points to keep in mind:
+</p><ul>
+<li>This assignment is open-ended in several ways. You'll need to make
+some decisions about how best to solve the problem and implement them
+carefully.</li>
+<li><strong>It is perfectly acceptable to discuss your solution on the forum, but don't share code.</strong></li>
+<li><strong>Each student must submit their own solution to the problem.</strong></li>
+<li>You will have an unlimited number of tries for each submission.</li>
+<li>Your code will be run in a protected environment, so you should
+only use the Python standard libraries unless you are specifically
+instructed otherwise. Your code should also not rely on any external
+libraries or web services.</li>
+</ul>
+<p></p>
+
+<h4>The Twitter Application Programming Interface</h4>
+
+<p>Twitter provides a very rich REST API for querying the system, accessing data, and control your account. You can <a href="https://dev.twitter.com/docs">read more about the Twitter API</a></p>
+
+<h4>Python 2.7.3 environment</h4>
+
+<p>If you are new to Python, you may find it valuable to work through the <a href="http://www.codecademy.com/tracks/python">codeacademy Python tutorials</a>. Focus on tutorials 1-9, plus tutorial 12 on File IO. In addition, many students have recommended <a href="https://developers.google.com/edu/python/">Google's Python class</a>.</p>
+
+<p>You will need to establish a Python programming environment to complete this assignment. You can install Python yourself by <a href="http://www.python.org/download/">downloading it from the Python website</a>, or can use the <a href="https://spark-public.s3.amazonaws.com/datasci/Coursera-Data-Science-Ubuntu.ova">class virtual machine</a>.
+</p>
+
+<h4>Unicode strings</h4>
+
+<p>Strings in the twitter data prefixed with the letter "u" are unicode strings. For example:</p>
+
+<pre>u"This is a string"</pre>
+
+<p>Unicode is a standard for representing a much larger variety of
+characters beyond the roman alphabet (greek, russian, mathematical
+symbols, logograms from non-phonetic
+writing systems such as kanji, etc.) </p>
+
+<p>In most circumstances, you will be able to use a unicode object just like a string.</p>
+
+<p>If you encounter an error involving printing unicode, you can use the <a href="http://docs.python.org/2/library/stdtypes.html#str.encode">encode</a> method to properly print the international characters, like this:</p>
+
+<pre>unicode_string = u"aaa�&nbsp;çççñññ"<br>encoded_string = unicode_string.encode('utf-8')<br>print encoded_string<br></pre>
+
+<h4>Getting Started</h4>
+
+<p>Once again: If you are new to Python, many students have recommended <a href="https://developers.google.com/edu/python/">Google's Python class.</a></p>
+
+
+<h3>Problem 1: Get Twitter Data</h3>
+
+
+
+<p>To access the live stream, you will need to install the <a href="http://pypi.python.org/pypi/oauth2/"><strong>oauth2 library</strong></a> so you can properly authenticate.</p>
+
+<p>This library may be installed on your virtual machine. If not, you can install it yourself in your Python environment. <code></code><br>
+</p>
+
+<p>The steps below will help you set up your twitter account to be able to access the live 1% stream.</p>
+
+<ol>
+<li>Create a twitter account if you do not already have one.</li>
+
+<li>Go to <a href="https://dev.twitter.com/apps"><strong>https://dev.twitter.com/apps</strong></a> and log in with your twitter credentials.</li>
+
+<li>Click "Create New App"</li>
+
+<li>Fill out the form and agree to the terms. Put in a dummy website if you don't have one you want to use.</li>
+
+<li>On the next page, click the "API Keys" tab along the top, then
+scroll all the way down until you see the section "Your Access Token"</li>
+
+<li>Click the button "Create My Access Token". You can <a href="https://dev.twitter.com/docs/auth"><strong>Read more about Oauth authorization.</strong></a></li>
+
+<li>You will now copy four values into twitterstream.py. These values
+are your "API Key", your "API secret", your "Access token" and your
+"Access token secret". All four should now be visible on the API Keys
+page. (You may see "API Key" referred to as "Consumer key" in some
+places in the code or on the web; they are synonyms.) Open
+twitterstream.py and set the variables corresponding to the api key,
+api secret, access token, and access secret. You will see code like the
+below: <pre>api_key = "&lt;Enter api key&gt;"<br>api_secret = "&lt;Enter api secret&gt;"<br>access_token_key = "&lt;Enter your access token key here&gt;"<br>access_token_secret = "&lt;Enter your access token secret here&gt;"<br><br></pre>
+</li>
+
+<li>Run the following and make sure you see data flowing and that no errors occur.
+
+<pre>$ python twitterstream.py &gt; output.txt</pre>
+
+This command pipes the output to a file.  Stop the program with Ctrl-C, but wait at least <strong>3 minutes</strong>
+for data to accumulate. Keep the file output.txt for the duration of
+the assignment; we will be reusing it in later problems. Don't use
+someone else's file; we will check for uniqueness in other parts of the
+assignment.
+</li>
+
+<li>If you wish, modify the file to use the <a href="https://dev.twitter.com/docs/api/1.1/get/search/tweets">twitter search API</a>
+to search for specific terms. For example, to search for the term
+"microsoft", you can pass the following url to the twitterreq function:
+<pre>https://api.twitter.com/1.1/search/tweets.json?q=microsoft<br></pre>
+</li>
+
+</ol>
+
+
+<p class="turnin">What to turn in: The first 20 lines of the twitter data you downloaded from the web. You can save the first 20 lines to a file <code>problem_1_submission.txt</code> by using the following command:
+</p><pre>$ head -n 20 output.txt &gt; problem_1_submission.txt</pre>
+<p></p>
+
+<h3>Problem 2: Derive the sentiment of each tweet</h3>
+
+<p>For this part, you will compute the sentiment of each tweet based on
+the sentiment scores of the terms in the tweet. The sentiment of a
+tweet is equivalent to the sum of the sentiment scores for each term in
+the tweet.</p>
+
+<p>You are provided with a skeleton file <code>tweet_sentiment.py</code> which accepts two arguments on the command line: a <em>sentiment file</em> and a tweet file like the one you generated in Problem 1. You can run the skeleton program like this:</p>
+
+<pre>$ python tweet_sentiment.py AFINN-111.txt output.txt</pre>
+
+<p>The file AFINN-111.txt contains a list of pre-computed sentiment
+scores. Each line in the file contains a word or phrase followed by a
+sentiment score. Each word or phrase that is found in a tweet but not
+found in AFINN-111.txt should be given a sentiment score of 0. See the
+file AFINN-README.txt for more information.</p>
+
+<p>To use the data in the AFINN-111.txt file, you may find it useful to
+build a dictionary. Note that the AFINN-111.txt file format is
+tab-delimited, meaning that the term and the score are separated by a
+tab character. A tab character can be identified a "\t".The following
+snippet may be useful:
+</p><pre>afinnfile = open("AFINN-111.txt")<br>scores = {} # initialize an empty dictionary<br>for line in afinnfile:<br>  term, score  = line.split("\t")  # The file is tab-delimited. "\t" means "tab character"<br>  scores[term] = int(score)  # Convert the score to an integer.<br><br>print scores.items() # Print every (term, score) pair in the dictionary<br></pre>
+<p></p>  
+
+<p>The data in the tweet file you generated in Problem 1 is represented as <em>JSON</em>,
+which stands for JavaScript Object Notation. It is a simple format for
+representing nested structures of data --- lists of lists of
+dictionaries of lists of .... you get the idea.</p>
+
+<p>Each line of <code>output.txt</code> represents a <a href="https://dev.twitter.com/docs/streaming-apis/messages">streaming message</a>.  Most, but not all, will be <a href="https://dev.twitter.com/docs/platform-objects/tweets">tweets</a>. (The skeleton program will tell you how many lines are in the file.)</p>
+
+<p>It is straightforward to convert a JSON string into a Python data structure; there is a library to do so called <code>json</code>.</p>
+
+<p>To use this library, add the following to the top of <code>tweet_sentiment.py</code></p>
+
+<pre>import json</pre>
+
+<p>Then, to parse the data in <code>output.txt</code>, you want to apply the function <code>json.loads</code> to every line in the file.</p>
+
+<p>This function will parse the json data and return a python data
+stucture; in this case, it returns a dictionary. If needed, take a
+moment to <strong><a href="http://docs.python.org/2/library/stdtypes.html#typesmapping">read the documentation for Python dictionaries</a></strong>.</p>
+
+<p>You can read the <a href="https://dev.twitter.com/docs/platform-objects/tweets">Twitter documentation</a>
+to understand what information each tweet contains and how to access
+it, but it's not too difficult to deduce the structure by direct
+inspection.</p>
+
+<p>Your script should print to stdout the sentiment of each tweet in
+the file, one numeric sentiment score per line. The first score should
+correspond to the first tweet, the second score should correspond to
+the second tweet, and so on. If you sort the scores, they won't match
+up. If you sort the tweets, they won't match up. If you put the tweets
+into a dictionary, the order will not be preserved. Once again: <strong class="important">The
+nth line of the file you submit should contain only a single number
+that represents the score of the nth tweet in the input file!</strong></p>
+
+<p class="important">NOTE: You must provide a score for <strong>every</strong>
+tweet in the sample file, even if that score is zero. You can assume
+the sample file will only include English tweets and no other types of
+streaming messages.</p>
+
+<p>To grade your submission, we will run your program on a tweet file formatted the same way as the <code>output.txt</code> file you generated in Problem 1.</p>
+
+<p>Hint: This is real-world data, and it can be messy!   Refer to the <a href="https://dev.twitter.com/docs/platform-objects/tweets">twitter documentation</a>
+to understand more about the data structure you are working with. Don't
+get discouraged, and ask for help on the forums if you get stuck!</p>
+
+<p class="turnin">What to turn in: The file <code>tweet_sentiment.py</code> after you've verified that it returns the correct answers.</p>
+
+<h3><big style="font-weight: bold;"><big><span style="font-weight: normal;">The following (Problem 3) is extra-credit</span></big></big><br>
+</h3><span style="font-weight: bold;"><big>Are we happy ?<br>
+</big><br>
+</span>Write a program that will compute the average sentiment of the
+100 most recent tweets. This program should be run every 5 minutes and
+the results plotted.<span style="font-weight: bold;"><br>
+</span></div>
+
+
+<iframe id="rdbIndicator" width="100%" height="270" border="0" src="./Assignment 1  Twitter Sentiment Analysis in Python_files/indicator.html" style="display: none; border: 0; position: fixed; left: 0; top: 0; z-index: 2147483647"></iframe></body></html>
