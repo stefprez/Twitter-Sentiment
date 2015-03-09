@@ -49,6 +49,7 @@ def main():
 	# Create sentiment dictionary
 	sentiment_dictionary = create_sentiment_dictionary(sentiment_file)
 
+	print("This script runs indefinitely. Press Ctrl+C to quit.")
 	print(headers)
 
 	while True:
