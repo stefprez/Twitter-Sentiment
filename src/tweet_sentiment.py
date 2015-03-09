@@ -1,27 +1,43 @@
 import sys
+import json
+import string
 
-def hw():
-    print 'Hello, world!'
+def create_sentiment_dictionary(sentiment_file):
+	sentiment_dictionary = {}
+	for line in sentiment_file:
+		word, sentiment_value  = line.split("\t")
+		sentiment_dictionary[word] = int(sentiment_value)
+	return sentiment_dictionary
 
-def lines(fp):
-    print str(len(fp.readlines()))
+def print_individual_sentiments(tweet_file, sentiment_dictionary):
+	for line in tweet_file:
+		tweet = json.loads(line)
+		try:
+			print calculate_tweet_sentiment(tweet["text"], sentiment_dictionary)
+		except:
+			pass  # JSON line doesn't have a text value
 
-def createSentimentDictionary():
-	sentimentFile = open("../res/AFINN-111.txt")
-	createSentimentDictionary = {} # initialize an empty dictionary
-	for line in sentimentFile:
-		word, sentimentValue  = line.split("\t")  # The file is tab-delimited. "\t" means "tab character"
-		createSentimentDictionary[word] = int(sentimentValue)  # Convert the sentimentValue to an integer.
+def calculate_tweet_sentiment(tweet, sentiment_dictionary):
+	tweet = format_tweet(tweet)
+	sentiment_value = 0
+	for word in tweet.split():
+		try:
+			sentiment_value += sentiment_dictionary[word]
+		except:
+			pass  # Word not in sentiment dictionary
+	return sentiment_value
 
-	return createSentimentDictionary
-
+def format_tweet(tweet):
+	tweet = tweet.encode('utf-8')  #Encode string for unicode
+	tweet = tweet.lower()  #Convert to lower case for accurate dictionary matching
+	tweet = tweet.translate(string.maketrans("",""), string.punctuation)  #Remove punctuation for dictionary matching
+	return tweet
 
 def main():
-    sent_file = open(sys.argv[1])
+    sentiment_file = open(sys.argv[1])
     tweet_file = open(sys.argv[2])
-    hw()
-    lines(sent_file)
-    lines(tweet_file)
+    sentiment_dictionary = create_sentiment_dictionary(sentiment_file)
+    print_individual_sentiments(tweet_file, sentiment_dictionary)
 
 if __name__ == '__main__':
     main()
