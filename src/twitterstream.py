@@ -54,7 +54,7 @@ def twitterreq(url, method, parameters):
 
 def fetchsamples():
   url = "https://stream.twitter.com/1/statuses/sample.json"
-  parameters = []
+  parameters = {'language': 'en'}
   response = twitterreq(url, "GET", parameters)
   for line in response:
     print line.strip()
