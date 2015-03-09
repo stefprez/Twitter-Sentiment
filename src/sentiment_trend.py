@@ -1,8 +1,8 @@
 from __future__ import print_function
 from time import sleep
-from sys import argv
 from tweet_sentiment import calculate_tweet_sentiment, create_sentiment_dictionary
 import twitterstream
+import sys
 import json
 import datetime
 
@@ -32,9 +32,18 @@ def calculate_average_sentiment(tweet_file, sentiment_dictionary):
 	return average_sentiment
 
 def main():
-	sentiment_file = open(argv[1])
-	output_file_path = argv[2]
-	number_of_tweets = int(argv[3])
+	try:
+		sentiment_file = open(sys.argv[1])
+		output_file_path = sys.argv[2]
+		number_of_tweets = int(sys.argv[3])
+	except:
+		sys.exit(
+			"Please enter the path to the sentiment file, " + 
+			"desired path for the Twitter Stream output, " + 
+			"and the number of tweets to collect for each sample " + 
+			"as arguments in that order.")
+
+
 	headers = "Date\tTime\tAverage Sentiment"
 
 	# Create sentiment dictionary

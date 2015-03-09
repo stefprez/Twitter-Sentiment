@@ -70,4 +70,9 @@ def main(output_path, number_of_tweets):
     fetchsamples(output_path, number_of_tweets)
 
 if __name__ == '__main__':
-    main(sys.argv[1], int(sys.argv[2]))
+    try:
+        main(sys.argv[1], int(sys.argv[2]))
+    except:
+        sys.exit(
+            "Please enter the desired path for the output file " +
+            "and the number of tweets to collect as arguments in that order.")
